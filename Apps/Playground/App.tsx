@@ -26,11 +26,6 @@ declare class TestClass {
   testFunction: () => string;
 };
 
-// function Foo(arg: number) {
-//   this.someProp = arg;
-//   return 6;
-// }
-
 const EngineScreen: FunctionComponent<ViewProps> = (props: ViewProps) => {
   const defaultScale = 1;
 
