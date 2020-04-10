@@ -12,6 +12,25 @@ import { EngineView, useEngine } from 'react-native-babylon';
 import { Scene, Vector3, Mesh, ArcRotateCamera, Engine, Camera, PBRMetallicRoughnessMaterial, Color3 } from '@babylonjs/core';
 import Slider from '@react-native-community/slider';
 
+
+declare const testValue: number;
+declare const testObject: {
+  testProperty: string,
+};
+declare const testFunction: (arg: number) => number;
+declare const testCallback: (arg: (arg: string) => void) => void;
+declare class TestClass {
+  constructor(arg: number);
+  testProperty1: number;
+  testProperty2: number;
+  testFunction: () => string;
+};
+
+// function Foo(arg: number) {
+//   this.someProp = arg;
+//   return 6;
+// }
+
 const EngineScreen: FunctionComponent<ViewProps> = (props: ViewProps) => {
   const defaultScale = 1;
 
@@ -22,6 +41,16 @@ const EngineScreen: FunctionComponent<ViewProps> = (props: ViewProps) => {
   const [fps, setFps] = useState<number>(0);
 
   useEngine((engine: Engine) => {
+    console.log("testValue: " + testValue);
+    console.log("testObject.testProperty: " + testObject.testProperty);
+    console.log("testFunction(42): " + testFunction(42));
+    testCallback(arg => console.log(arg));
+    const testObj = new TestClass(7);
+    console.log("TestClass.testProperty1: " + testObj.testProperty1);
+    console.log("TestClass.testProperty2: " + testObj.testProperty2);
+    console.log("TestClass.testFunction(): " + testObj.testFunction());
+    console.log("TestClass.testProperty2: " + testObj.testProperty2);
+
     const scene = new Scene(engine);
     scene.createDefaultCamera(true);
     if (scene.activeCamera != null) {
