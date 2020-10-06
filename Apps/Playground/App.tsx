@@ -12,6 +12,21 @@ import { EngineView, useEngine, EngineViewCallbacks } from '@babylonjs/react-nat
 import { Scene, Vector3, Mesh, ArcRotateCamera, Camera, PBRMetallicRoughnessMaterial, Color3, TargetCamera, WebXRSessionManager, Engine } from '@babylonjs/core';
 import Slider from '@react-native-community/slider';
 
+function CreateSpheresAsync(scene: Scene, size: number) {
+  for (var i = 0; i < size; i++) {
+      for (var j = 0; j < size; j++) {
+          for (var k = 0; k < size; k++) {
+              var sphere = Mesh.CreateSphere("sphere" + i + j + k, 32, 0.9, scene);
+              sphere.position.x = i;
+              sphere.position.y = j;
+              sphere.position.z = k;
+          }
+      }
+  }
+
+  return Promise.resolve();
+}
+
 const EngineScreen: FunctionComponent<ViewProps> = (props: ViewProps) => {
   const defaultScale = 1;
   const enableSnapshots = false;
@@ -30,9 +45,6 @@ const EngineScreen: FunctionComponent<ViewProps> = (props: ViewProps) => {
     if (engine) {
       const scene = new Scene(engine);
       setScene(scene);
-      scene.createDefaultCamera(true);
-      (scene.activeCamera as ArcRotateCamera).beta -= Math.PI / 8;
-      setCamera(scene.activeCamera!);
       scene.createDefaultLight(true);
 
       const box = Mesh.CreateBox("box", 0.3, scene);
@@ -42,6 +54,12 @@ const EngineScreen: FunctionComponent<ViewProps> = (props: ViewProps) => {
       mat.roughness = 0.5;
       mat.baseColor = Color3.Red();
       box.material = mat;
+
+      CreateSpheresAsync(scene, 4);
+
+      scene.createDefaultCamera(true);
+      (scene.activeCamera as ArcRotateCamera).beta -= Math.PI / 8;
+      setCamera(scene.activeCamera!);
 
       scene.beforeRender = function () {
         box.rotate(Vector3.Up(), 0.005 * scene.getAnimationRatio());
@@ -98,7 +116,7 @@ const EngineScreen: FunctionComponent<ViewProps> = (props: ViewProps) => {
                 <Image style={{flex: 1}} source={{uri: snapshotData }} />
               </View>
             }
-            <EngineView style={props.style} camera={camera} onInitialized={onInitialized} />
+            <EngineView style={props.style} camera={camera} onInitialized={onInitialized} displayFrameRate={true} />
             <Slider style={{position: 'absolute', minHeight: 50, margin: 10, left: 0, right: 0, bottom: 0}} minimumValue={0.2} maximumValue={2} value={defaultScale} onValueChange={setScale} />
           </View>
         }
