@@ -35,7 +35,7 @@ namespace Babylon
 
         Napi::Env env;
         std::shared_ptr<facebook::react::CallInvoker> jsCallInvoker;
-        std::unique_ptr<Graphics> m_graphics{};
+        std::unique_ptr<Graphics> graphics{};
         JsRuntime* runtime{};
         Plugins::NativeInput* nativeInput{};
     };
@@ -43,13 +43,14 @@ namespace Babylon
     Native::Native(facebook::jsi::Runtime& jsiRuntime, std::shared_ptr<facebook::react::CallInvoker> callInvoker, void* windowPtr, size_t width, size_t height)
         : m_impl{ std::make_unique<Native::Impl>(jsiRuntime, callInvoker) }
     {
-        dispatch_sync(dispatch_get_main_queue(), ^{
-            m_impl->m_graphics = Graphics::CreateGraphics(reinterpret_cast<void*>(windowPtr), width, height);
-        });
+        //dispatch_sync(dispatch_get_main_queue(), ^{
+            m_impl->graphics = Graphics::CreateGraphics(reinterpret_cast<void*>(windowPtr), width, height);
+        //});
+        //m_impl->graphics = Graphics::CreateGraphics(static_cast<void*>(nullptr), static_cast<size_t>(0), static_cast<size_t>(0));
 
         m_impl->runtime = &JsRuntime::CreateForJavaScript(m_impl->env, CreateJsRuntimeDispatcher(m_impl->env, jsiRuntime, callInvoker));
         
-        m_impl->m_graphics->AddToJavaScript(m_impl->env);
+        m_impl->graphics->AddToJavaScript(m_impl->env);
 
         Polyfills::Window::Initialize(m_impl->env);
         // NOTE: React Native's XMLHttpRequest is slow and allocates a lot of memory. This does not override
@@ -60,21 +61,29 @@ namespace Babylon
         Plugins::NativeXr::Initialize(m_impl->env);
 
         m_impl->nativeInput = &Babylon::Plugins::NativeInput::CreateForJavaScript(m_impl->env);
+        
+//        m_impl->graphics->UpdateWindow<void*>(windowPtr);
+//        m_impl->graphics->UpdateSize(width, height);
     }
 
     Native::~Native()
     {
     }
 
+    // Maybe add a Reset function that destructs the graphics instance?
+    // Maybe add a WhenReady function that takes an std::function as an arg, and calls them when we have a fully initialized graphics instance
+    // (via Graphics::GetAfterRenderTask().then(...))
+    // The module's whenInitialized would then just pass an std::function to Native::WhenReady that calls the resolve block
+
     void Native::Refresh(void* windowPtr, size_t width, size_t height)
     {
-        m_impl->m_graphics->UpdateWindow<void*>(windowPtr);
-        m_impl->m_graphics->UpdateSize(width, height);
+        m_impl->graphics->UpdateWindow<void*>(windowPtr);
+        m_impl->graphics->UpdateSize(width, height);
     }
 
     void Native::Resize(size_t width, size_t height)
     {
-        m_impl->m_graphics->UpdateSize(width, height);
+        m_impl->graphics->UpdateSize(width, height);
     }
 
     void Native::SetPointerButtonState(uint32_t pointerId, uint32_t buttonId, bool isDown, uint32_t x, uint32_t y)
