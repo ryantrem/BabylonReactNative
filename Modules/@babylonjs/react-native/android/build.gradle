@@ -224,25 +224,21 @@ task extractNativeLibraries() {
 }
 
 task extractFBJNIHeaders {
-    doLast {
-        configurations.fbjniHeaders.files.each { f ->
-            copy {
-                from zipTree(f)
-                into "$extractedLibDir/fbjni"
-                include "**/*.h"
-            }
+    configurations.fbjniHeaders.files.each { f ->
+        copy {
+            from zipTree(f)
+            into "$extractedLibDir/fbjni"
+            include "**/*.h"
         }
     }
 }
 
 task extractFBJNILibs {
-    doLast {
-        configurations.fbjniLibs.files.each { f ->
-            copy {
-                from zipTree(f)
-                into extractedLibDir
-                include "jni/**/*"
-            }
+    configurations.fbjniLibs.files.each { f ->
+        copy {
+            from zipTree(f)
+            into extractedLibDir
+            include "jni/**/*"
         }
     }
 }
