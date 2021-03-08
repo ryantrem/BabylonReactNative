@@ -9,7 +9,7 @@
             "cwd": "${workspaceFolder}/Apps/Playground",
             "type": "reactnativedirect",
             "request": "launch",
-            "platform": "android"
+            "platform": "android",
         },
         {
             "name": "Build & Debug iOS on Device",
@@ -21,10 +21,18 @@
             "target": "device"
         },
         {
+            "name": "Build & Debug iOS on Device (Hermes)",
+            "cwd": "${workspaceFolder}/Apps/Playground",
+            "type": "reactnativedirect",
+            "request": "launch",
+            "platform": "ios",
+            "target": "device",
+        },
+        {
             "name": "Attach to Android",
             "cwd": "${workspaceFolder}/Apps/Playground",
             "type": "reactnativedirect",
-            "request": "attach"
+            "request": "attach",
         },
         {
             "name": "Attach to iOS on Device",
@@ -32,7 +40,14 @@
             "type": "reactnativedirect",
             "request": "attach",
             "platform": "ios",
-            "port": 9221
+            "port": 9221,
+        },
+        {
+            "name": "Attach to iOS on Device (Hermes)",
+            "cwd": "${workspaceFolder}/Apps/Playground",
+            "type": "reactnativedirect",
+            "request": "attach",
+            "platform": "ios",
         },
     ]
 }

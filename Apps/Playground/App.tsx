@@ -13,6 +13,8 @@ import { Scene, Vector3, ArcRotateCamera, Camera, WebXRSessionManager, SceneLoad
 import '@babylonjs/loaders';
 import Slider from '@react-native-community/slider';
 
+declare var global: { HermesInternal: null | {} };
+
 const EngineScreen: FunctionComponent<ViewProps> = (props: ViewProps) => {
   const defaultScale = 1;
   const enableSnapshots = false;
@@ -139,7 +141,7 @@ const EngineScreen: FunctionComponent<ViewProps> = (props: ViewProps) => {
                 <Image style={{flex: 1}} source={{uri: snapshotData }} />
               </View>
             }
-            <EngineView style={props.style} camera={camera} onInitialized={onInitialized} />
+            <EngineView style={{flex: 1}} camera={camera} onInitialized={onInitialized} />
             <Slider style={{position: 'absolute', minHeight: 50, margin: 10, left: 0, right: 0, bottom: 0}} minimumValue={0.2} maximumValue={2} step={0.01} value={defaultScale} onValueChange={setScale} />
             <Text style={{fontSize: 12, color: 'yellow',  position: 'absolute', margin: 10}}>{trackingStateToString(trackingState)}</Text>
           </View>
@@ -162,6 +164,9 @@ const App = () => {
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView style={{flex: 1, backgroundColor: "white"}}>
+        <Text style={{fontWeight: 'bold', alignSelf: 'center' }}>
+          JavaScript Engine: {!!global.HermesInternal ? 'Hermes' : 'JSC'}
+        </Text>
         { !toggleScreen &&
           <EngineScreen style={{flex: 1}} />
         }
